@@ -19,7 +19,7 @@ var api = new ParseServer({
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
-  }
+  },
   push: {
     ios: {
       pfx: process.env.PFX || '', // The filename of private key and certificate in PFX or PKCS12 format from disk  
