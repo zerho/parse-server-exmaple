@@ -21,15 +21,8 @@ var api = new ParseServer({
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
   }
   push: {
-    android: {
-      senderId: '', // The Sender ID of GCM
-      apiKey: '' // The Server API Key of GCM
-    },
     ios: {
       pfx: process.env.PFX || '', // The filename of private key and certificate in PFX or PKCS12 format from disk  
-      passphrase: '', // optional password to your p12
-      cert: '', // If not using the .p12 format, the path to the certificate PEM to load from disk
-      key: '', // If not using the .p12 format, the path to the private key PEM to load from disk
       bundleId: process.env.BUNDLE_ID || '', // The bundle identifier associate with your app
       production: process.env.PUSH_PRODUCTION || false // Specifies which environment to connect to: Production (if true) or Sandbox
     }
