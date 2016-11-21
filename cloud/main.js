@@ -2,7 +2,7 @@ Parse.Cloud.afterSave("Posts", function(request) {
 Array.prototype.last = function() {
   return this[this.length-1];
 }
-var aPost = request.object.extend("Post");
+var aPost = request.object;
 var commentRelation = subjectObj.relation("comments");
 var aComment = commentRelation.last()
 var query = new Parse.Query('_Parse.Installation');
