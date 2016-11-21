@@ -19,7 +19,7 @@
 // 	}, { useMasterKey: true });
 // });
 
-Parse.Cloud.afterSave("Post", function(request) {
+Parse.Cloud.afterSave("Posts", function(request) {
 	Parse.Push.send({
     where: new Parse.Query(Parse.Installation), // Set our Installation query
     data: {
@@ -29,6 +29,6 @@ Parse.Cloud.afterSave("Post", function(request) {
       // Push was successful
       console.log('DAJEEEEEE weeee!');
   }, (e) => {
-      console.log(e);
+      console.log('ERRORE: ' + e);
   });
 });
