@@ -1,6 +1,6 @@
 Parse.Cloud.afterSave("Posts", function(request) {
 var aPost = request.object;
-var user = request.user.fetch()
+var user = aPost.get("user").fetch()
 var commentRelation = aPost.relation("comments");
 var query = new Parse.Query('_Parse.Installation');
 var postOwner = "ABRA_User_" + aPost.get('user').id
