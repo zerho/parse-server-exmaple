@@ -13,6 +13,10 @@ Parse.Cloud.afterSave("Posts", function(request) {
     var postOwner = "ABRA_User_" + aPost.get("user").id
     query.equalTo('channels', postOwner);
 
+    console.log("USER: "+aPost.get("user").get("username"))
+    console.log("TEXT: "+aComment.get("text"))
+    console.log("POST TEXT: " +aPost.get("text"))
+
     Parse.Push.send({
       where: query,
       data: { 
