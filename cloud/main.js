@@ -1,6 +1,6 @@
 Parse.Cloud.afterSave("Posts", function(request) {
   var aPost = request.object;
-  var user = request.get("user").fetch()
+  var user = aPost.get("user").fetch()
 
   var commentRelationQuery = aPost.relation("comments").query();
   commentRelationQuery.descending("createdAt");
