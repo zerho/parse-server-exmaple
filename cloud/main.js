@@ -4,7 +4,7 @@ Array.prototype.last = function() {
 }
 var aPost = request.object;
 var commentRelation = aPost.relation("comments");
-var aComment = commentRelation[commentRelation.length - 1];
+var aComment = commentRelation[commentRelation.length - 1].fetch();
 var query = new Parse.Query('_Parse.Installation');
 var postOwner = "ABRA_User_" + aPost.get('user').id
 query.equalTo('channels', postOwner);
