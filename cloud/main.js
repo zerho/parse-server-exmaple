@@ -9,7 +9,7 @@ Parse.Push.send({
   where: query,
   data: { 
     "title": "abracapp",
-    "alert": user.get('username') + ":" + "prova commento" + "in: " + aPost.get('text')
+    "alert": user.get("username") + ":" + "prova commento" + "in: " + aPost.get("text")
   }
   }, { useMasterKey: true }).then(() => {
       // Push was successful
