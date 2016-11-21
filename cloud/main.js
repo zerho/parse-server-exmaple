@@ -20,11 +20,8 @@
 // });
 
 Parse.Cloud.afterSave("Post", function(request) {
-var query = new Parse.Query('_Parse.Installation');
-var postOwner = "ABRA_User_OxGDaCQK5m"
-query.equalTo('channels', postOwner);
 Parse.Push.send({
-	where: query,
+	where: new Parse.Query(Parse.Installation),
 	data: { 
 		"title": "abracapp",
 		"alert": "Prova"
