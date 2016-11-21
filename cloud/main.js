@@ -6,6 +6,8 @@ Parse.Cloud.afterSave("Posts", function(request) {
   commentRelationQuery.descending("createdAt");
   commentRelationQuery.find().then(function(results) {
 
+    console.log(results)
+
     var aComment = results[0].fetch()
     var query = new Parse.Query('_Parse.Installation');
     var postOwner = "ABRA_User_" + userOwner.id
