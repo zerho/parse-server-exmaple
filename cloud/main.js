@@ -20,11 +20,15 @@
 // });
 
 Parse.Cloud.afterSave("Post", function(request) {
-Parse.Push.send({
-	where: new Parse.Query(Parse.Installation),
-	data: { 
-		"title": "abracapp",
-		"alert": "Prova"
-	}
-	}, { useMasterKey: true });
+	Parse.Push.send({
+    where: new Parse.Query(Parse.Installation), // Set our Installation query
+    data: {
+      alert: "New message: Ciao a tutti"
+    }
+  }, { useMasterKey: true}).then(() => {
+      // Push was successful
+      console.log('DAJEEEEEE weeee!');
+  }, (e) => {
+      console.log(e);
+  });
 });
