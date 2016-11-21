@@ -2,10 +2,10 @@ Parse.Cloud.afterSave("Posts", function(request) {
   var aPost = request.object;
   var userOwner = aPost.get("user").fetch()
 
-  var commentRelation = aPost.relation("comments");
-  var commentRelationQuery = commentRelation.query();
-  commentRelationQuery.descending("createdAt");
-  commentRelationQuery.find().then(function(results) {
+  // var commentRelation = aPost.relation("comments");
+  // var commentRelationQuery = commentRelation.query();
+  // commentRelationQuery.descending("createdAt");
+  // commentRelationQuery.find().then(function(results) {
 
     var aComment = results[0].fetch()
     var query = new Parse.Query('_Parse.Installation');
@@ -24,7 +24,7 @@ Parse.Cloud.afterSave("Posts", function(request) {
       }, (e) => {
           console.log('ERRORE: ' + e);
       });
-    });
+    // });
 
 });
 
