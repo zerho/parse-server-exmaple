@@ -6,8 +6,8 @@ var query = new Parse.Query('_Parse.Installation');
 var postOwner = "ABRA_User_" + aPost.get('user').id
 console.log('VAR: ' + postOwner);
 console.log('VAR: ' + request.user.get('username'));
-console.log('VAR: ' + aComment.get('text');
-console.log('VAR: ' + aPost.get('text');
+console.log('VAR: ' + aComment.get('text'));
+console.log('VAR: ' + aPost.get('text'));
 query.equalTo('channels', postOwner);
 Parse.Push.send({
   where: query,
