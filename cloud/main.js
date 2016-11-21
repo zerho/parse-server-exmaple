@@ -1,5 +1,6 @@
 Parse.Cloud.afterSave("Posts", function(request) {
   var aPost = request.object;
+  var user = request.get("user").fetch()
 
   var commentRelationQuery = aPost.relation("comments").query();
   commentRelationQuery.descending("createdAt");
@@ -10,18 +11,18 @@ Parse.Cloud.afterSave("Posts", function(request) {
 
     var aComment = results[0].fetch()
     var query = new Parse.Query('_Parse.Installation');
-    var postOwner = "ABRA_User_" + aPost.get("user").id
+    var postOwner = "ABRA_User_" + user.id
     query.equalTo('channels', postOwner);
 
-    console.log("USER: "+aPost.get("user").get("username"))
+    console.log("USER: "+user.get("username"))
     console.log("TEXT: "+aComment.get("text"))
     console.log("POST TEXT: " +aPost.get("text"))
 
-    Parse.Push.send({
+    Parse.Push.send({   
       where: query,
       data: { 
         "title": "abracapp",
-        "alert": aPost.get("user").get("username") + ":" + aComment.get("text") + "in: " + aPost.get("text")
+        "alert": user.get("username") + ":" + aComment.get("text") + "in: " + aPost.get("text")
       }
       }, { useMasterKey: true }).then(() => {
           // Push was successful
