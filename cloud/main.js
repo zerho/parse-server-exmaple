@@ -6,11 +6,11 @@ Parse.Cloud.afterSave("Posts", function(request) {
   commentRelationQuery.descending("createdAt");
   commentRelationQuery.limit(1)
   commentRelationQuery.find().then(function(results) {
-    
+
     var aComment = results[0].fetch()
     var query = new Parse.Query('_Parse.Installation');
-    // var postOwner = "ABRA_User_" + user.id
-    // query.equalTo('channels', postOwner);
+    var postOwner = "ABRA_User_" + user.id
+    query.equalTo('channels', postOwner);
 
     Parse.Push.send({   
       where: query,
@@ -22,7 +22,7 @@ Parse.Cloud.afterSave("Posts", function(request) {
           // Push was successful
           console.log('DAJEEEEEE weeee!');
       }, (e) => {
-          console.log('ERRORE: ' + e);
+          console.log('ERROR: ' + e);
       });
     });
 
