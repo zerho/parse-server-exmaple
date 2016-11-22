@@ -1,6 +1,7 @@
 Parse.Cloud.afterSave("Posts", function(request) {
   var aPost = request.object;
   var user = aPost.get("user").fetch()
+  var currentUser = Parse.User.current();
 
   var commentRelationQuery = aPost.relation("comments").query();
   commentRelationQuery.descending("createdAt");
@@ -16,7 +17,7 @@ Parse.Cloud.afterSave("Posts", function(request) {
       where: query,
       data: { 
         "title": "abracapp",
-        "alert": user.get("username") + ":" + aComment.get("text") + "in: " + aPost.get("text")
+        "alert": currentUser.get("username") + ":" + aComment.get("text") + "in: " + aPost.get("text")
       }
       }, { useMasterKey: true }).then(() => {
           // Push was successful
