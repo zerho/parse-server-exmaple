@@ -31,9 +31,7 @@ Parse.Cloud.beforeSave("Posts", function(request) {
 
   var addedLikes = request.object.op("likes").relationsToAdd;
 
-  if (addedLikes.empty?) {
-    return
-  };
+  if addedLikes.empty? return
         
   var query = new Parse.Query('_Parse.Installation');
   var postOwner = "ABRA_User_" + aPost.get("user").id
