@@ -3,12 +3,15 @@ Parse.Cloud.beforeSave("Posts", function(request) {
   var currentUser = request.user
 
   var addedLikes = request.object.op("likes").relationsToAdd;
+  console.log("TEEEEEEST: " + addedLikes)
 
   if (addedLikes.lenght == 1) {
+    console.log("ENTRO PERCHE' E' uno")
     var query = new Parse.Query('_Parse.Installation');
     var postOwner = "ABRA_User_" + aPost.get("user").id
     query.equalTo('channels', postOwner);
-    
+    console.log("USER:" + postOwner)
+
     Parse.Push.send({   
       where: query,
       data: { 
