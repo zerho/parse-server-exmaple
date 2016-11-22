@@ -14,7 +14,7 @@ Parse.Cloud.afterSave("Posts", function(request) {
     
     console.log("USER:" + currentUser)
     console.log("COMMENT:" + aComment)
-    console.log("POST": + aPost)
+    console.log("POST:" + aPost)
 
     Parse.Push.send({   
       where: query,
