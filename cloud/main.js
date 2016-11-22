@@ -4,7 +4,7 @@ Parse.Cloud.beforeSave("Posts", function(request) {
 
   var addedLikes = request.object.op("likes").relationsToAdd;
 
-  unless addedLikes.empty?
+  if (addedLikes.lenght == 1) {
     var query = new Parse.Query('_Parse.Installation');
     var postOwner = "ABRA_User_" + aPost.get("user").id
     query.equalTo('channels', postOwner);
@@ -18,7 +18,7 @@ Parse.Cloud.beforeSave("Posts", function(request) {
         "alert": currentUser.get("username") + " likes your post: " + aPost.get("text")
       }
       }, { useMasterKey: true })
-  
+  }
 });
 
 Parse.Cloud.afterSave("Posts", function(request) {
