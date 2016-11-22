@@ -7,4 +7,4 @@ Parse.Cloud.define("sendPush", function(request, response) {
                             }, function(error) {
                               response.error(error);
                             });
-}
+});
