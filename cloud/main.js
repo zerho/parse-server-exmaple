@@ -1,63 +1,10 @@
-Parse.Cloud.beforeSave("Posts", function(request) {
-  var aPost = request.object;
-  var currentUser = request.user
-  var addedLikes = request.object.op("likes").relationsToAdd;
-
-  console.log("LIKES: " + addedLikes)
-
-  if (addedLikes) {
-    var query = new Parse.Query('_Parse.Installation');
-    var postOwner = "ABRA_User_" + aPost.get("user").id
-    query.equalTo('channels', postOwner);
-
-    Parse.Push.send({   
-      where: query,
-      data: { 
-        "title": "abracapp",
-        "badge": "Increment",
-        "sound": "default",
-        "alert": currentUser.get("username") + " likes your post: " + aPost.get("text")
-      }
-      }, { useMasterKey: true }).then(function() {
-                                  console.log("Push sent!");
-                                }, function(error) {
-                                  response.error(error);
-                                });
-  } 
-});
-
-Parse.Cloud.afterSave("Posts", function(request) {
-  var aPost = request.object;
-  var currentUser = request.user
-  var addedComments = request.object.op("comments").relationsToAdd;
-  
-  console.log("COMMENTS: " + addedComments)
-
-  if (addedComments) {
-    var commentRelationQuery = aPost.relation("comments").query();
-    commentRelationQuery.descending("createdAt");
-    commentRelationQuery.limit(1)
-    commentRelationQuery.find().then(function(results) {
-
-    results[0].fetch()
-    var aComment = results[0]
-    var query = new Parse.Query('_Parse.Installation');
-    var postOwner = "ABRA_User_" + aPost.get("user").id
-    query.equalTo('channels', postOwner);
-    
-    Parse.Push.send({   
-      where: query,
-      data: { 
-        "title": "abracapp",
-        "badge": "Increment",
-        "sound": "default",
-        "alert": currentUser.get("username") + ": " + aComment.get("text") + " in: " + aPost.get("text")
-      }
-      }, { useMasterKey: true }).then(function() {
-                                  console.log("Push sent!");
-                                }, function(error) {
-                                  response.error(error);
-                                });
-    });
-  };
-});
+Parse.Cloud.define("sendPush", function(request, response) {
+  Parse.Push.send({   
+  where: query,
+  data: request.params
+  }, { useMasterKey: true }).then(function() {
+                              response.success()
+                            }, function(error) {
+                              response.error(error);
+                            });
+}
