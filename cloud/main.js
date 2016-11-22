@@ -1,14 +1,12 @@
 Parse.Cloud.beforeSave("Posts", function(request) {
   var aPost = request.object;
   var currentUser = request.user
-
   var addedLikes = request.object.op("likes").relationsToAdd;
 
   if (addedLikes) {
     var query = new Parse.Query('_Parse.Installation');
     var postOwner = "ABRA_User_" + aPost.get("user").id
     query.equalTo('channels', postOwner);
-    console.log("USER:" + postOwner)
 
     Parse.Push.send({   
       where: query,
@@ -25,11 +23,13 @@ Parse.Cloud.beforeSave("Posts", function(request) {
 Parse.Cloud.afterSave("Posts", function(request) {
   var aPost = request.object;
   var currentUser = request.user
+  var addedComments = request.object.op("comments").relationsToAdd;
 
-  var commentRelationQuery = aPost.relation("comments").query();
-  commentRelationQuery.descending("createdAt");
-  commentRelationQuery.limit(1)
-  commentRelationQuery.find().then(function(results) {
+  if (addedComments) {
+    var commentRelationQuery = aPost.relation("comments").query();
+    commentRelationQuery.descending("createdAt");
+    commentRelationQuery.limit(1)
+    commentRelationQuery.find().then(function(results) {
 
     results[0].fetch()
     var aComment = results[0]
@@ -47,4 +47,5 @@ Parse.Cloud.afterSave("Posts", function(request) {
       }
       }, { useMasterKey: true })
     });
+  };
 });
