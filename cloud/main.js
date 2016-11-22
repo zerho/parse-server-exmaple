@@ -13,15 +13,13 @@ Parse.Cloud.afterSave("Posts", function(request) {
     var postOwner = "ABRA_User_" + aPost.get("user").id
     query.equalTo('channels', postOwner);
     
-    console.log("USER:" + currentUser)
-    console.log("COMMENT:" + aComment)
-    console.log("POST:" + aPost)
-
     Parse.Push.send({   
       where: query,
       data: { 
         "title": "abracapp",
-        "alert": currentUser.get("username") + ":" + aComment.get("text") + "in: " + aPost.get("text")
+        "badge": "Increment",
+        "sound": "default",
+        "alert": currentUser.get("username") + ": " + aComment.get("text") + " in: " + aPost.get("text")
       }
       }, { useMasterKey: true })
     });
