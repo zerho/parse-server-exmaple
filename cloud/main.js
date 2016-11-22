@@ -10,6 +10,7 @@ Parse.Cloud.afterSave("Posts", function(request) {
     var aComment = results[0].fetch()
     var query = new Parse.Query('_Parse.Installation');
     var postOwner = "ABRA_User_" + aPost.get("user").id
+    console.log('USER:' + postOwner);
     query.equalTo('channels', postOwner);
 
     Parse.Push.send({   
