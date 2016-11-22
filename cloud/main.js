@@ -10,8 +10,11 @@ Parse.Cloud.afterSave("Posts", function(request) {
     var aComment = results[0].fetch()
     var query = new Parse.Query('_Parse.Installation');
     var postOwner = "ABRA_User_" + aPost.get("user").id
-    console.log('USER:' + postOwner);
     query.equalTo('channels', postOwner);
+    
+    console.log(currentUser)
+    console.log(aComment)
+    console.log(aPost)
 
     Parse.Push.send({   
       where: query,
@@ -26,7 +29,7 @@ Parse.Cloud.afterSave("Posts", function(request) {
           console.log('ERROR: ' + e);
       });
     });
-
+  
 });
 
 
