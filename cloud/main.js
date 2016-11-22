@@ -1,13 +1,15 @@
 Parse.Cloud.afterSave("Posts", function(request) {
   var aPost = request.object;
-  var currentUser = Parse.User.current();
+  Parse.User.current().fetch();
+  var currentUser = Parse.User.current()
 
   var commentRelationQuery = aPost.relation("comments").query();
   commentRelationQuery.descending("createdAt");
   commentRelationQuery.limit(1)
   commentRelationQuery.find().then(function(results) {
 
-    var aComment = results[0].fetch()
+    results[0].fetch()
+    var aComment = results[0]
     var query = new Parse.Query('_Parse.Installation');
     var postOwner = "ABRA_User_" + aPost.get("user").id
     query.equalTo('channels', postOwner);
