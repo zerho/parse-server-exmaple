@@ -1,51 +1,55 @@
-// Parse.Cloud.beforeSave("Posts", function(request) {
-//   var aPost = request.object;
-//   var currentUser = request.user
-//   var addedLikes = request.object.op("likes").relationsToAdd;
+Parse.Cloud.beforeSave("Posts", function(request) {
+  var aPost = request.object;
+  var currentUser = request.user
+  var addedLikes = request.object.op("likes").relationsToAdd;
 
-//   if (addedLikes) {
-//     var query = new Parse.Query('_Parse.Installation');
-//     var postOwner = "ABRA_User_" + aPost.get("user").id
-//     query.equalTo('channels', postOwner);
+  console.log("LIKES: " + addedLikes)
 
-//     Parse.Push.send({   
-//       where: query,
-//       data: { 
-//         "title": "abracapp",
-//         "badge": "Increment",
-//         "sound": "default",
-//         "alert": currentUser.get("username") + " likes your post: " + aPost.get("text")
-//       }
-//       }, { useMasterKey: true })
-//   } 
-// });
+  if (addedLikes) {
+    var query = new Parse.Query('_Parse.Installation');
+    var postOwner = "ABRA_User_" + aPost.get("user").id
+    query.equalTo('channels', postOwner);
 
-// Parse.Cloud.afterSave("Posts", function(request) {
-//   var aPost = request.object;
-//   var currentUser = request.user
-//   var addedComments = request.object.op("comments").relationsToAdd;
+    Parse.Push.send({   
+      where: query,
+      data: { 
+        "title": "abracapp",
+        "badge": "Increment",
+        "sound": "default",
+        "alert": currentUser.get("username") + " likes your post: " + aPost.get("text")
+      }
+      }, { useMasterKey: true })
+  } 
+});
 
-//   if (addedComments) {
-//     var commentRelationQuery = aPost.relation("comments").query();
-//     commentRelationQuery.descending("createdAt");
-//     commentRelationQuery.limit(1)
-//     commentRelationQuery.find().then(function(results) {
+Parse.Cloud.afterSave("Posts", function(request) {
+  var aPost = request.object;
+  var currentUser = request.user
+  var addedComments = request.object.op("comments").relationsToAdd;
+  
+  console.log("COMMENTS: " + addedComments)
 
-//     results[0].fetch()
-//     var aComment = results[0]
-//     var query = new Parse.Query('_Parse.Installation');
-//     var postOwner = "ABRA_User_" + aPost.get("user").id
-//     query.equalTo('channels', postOwner);
+  if (addedComments) {
+    var commentRelationQuery = aPost.relation("comments").query();
+    commentRelationQuery.descending("createdAt");
+    commentRelationQuery.limit(1)
+    commentRelationQuery.find().then(function(results) {
+
+    results[0].fetch()
+    var aComment = results[0]
+    var query = new Parse.Query('_Parse.Installation');
+    var postOwner = "ABRA_User_" + aPost.get("user").id
+    query.equalTo('channels', postOwner);
     
-//     Parse.Push.send({   
-//       where: query,
-//       data: { 
-//         "title": "abracapp",
-//         "badge": "Increment",
-//         "sound": "default",
-//         "alert": currentUser.get("username") + ": " + aComment.get("text") + " in: " + aPost.get("text")
-//       }
-//       }, { useMasterKey: true })
-//     });
-//   };
-// });
+    Parse.Push.send({   
+      where: query,
+      data: { 
+        "title": "abracapp",
+        "badge": "Increment",
+        "sound": "default",
+        "alert": currentUser.get("username") + ": " + aComment.get("text") + " in: " + aPost.get("text")
+      }
+      }, { useMasterKey: true })
+    });
+  };
+});
