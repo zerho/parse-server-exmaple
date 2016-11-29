@@ -21,11 +21,18 @@ var api = new ParseServer({
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
   },
   push: {
-    ios: {
-      pfx: process.env.PFX || '', // The filename of private key and certificate in PFX or PKCS12 format from disk  
-      bundleId: process.env.BUNDLE_ID || '', // The bundle identifier associate with your app
-      production: process.env.PUSH_PRODUCTION || false // Specifies which environment to connect to: Production (if true) or Sandbox
-    }
+    ios: [
+      {
+        pfx: process.env.PFX || '', // The filename of private key and certificate in PFX or PKCS12 format from disk  
+        bundleId: process.env.BUNDLE_ID || '', // The bundle identifier associate with your app
+        production: process.env.PUSH_PRODUCTION || false // Specifies which environment to connect to: Production (if true) or Sandbox
+      },
+      {
+        pfx: process.env.PFX_DEV || '', // The filename of private key and certificate in PFX or PKCS12 format from disk  
+        bundleId: process.env.BUNDLE_ID || '', // The bundle identifier associate with your app
+        production: process.env.PUSH_DEV || false // Specifies which environment to connect to: Production (if true) or Sandbox
+      }
+    ]
   }
 });
 // Client-keys like the javascript key or the .NET key are not necessary with parse-server
