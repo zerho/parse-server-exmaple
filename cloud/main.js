@@ -13,7 +13,8 @@ Parse.Cloud.define("sendPush", function(request, response) {
         var notifications = Parse.Object.extend("Notifications");
         var aNotification = new notifications();
         aNotification.set("postType", request.params.type)
-        aNotification.set("senderUsername", request.params.username)
+        aNotification.set("senderUsername", request.params.senderUsername)
+        aNotification.set("receiverUsername", request.params.receiverUsername)
         aNotification.set("postObjectId", request.params.postId)
         aNotification.set("parseObjectId", request.params.kParsePushParameterNotificationParseObjectId)
         aNotification.set("notificationMessage", request.params.message)
