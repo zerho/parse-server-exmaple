@@ -32,7 +32,11 @@ var api = new ParseServer({
         bundleId: process.env.BUNDLE_ID || '', // The bundle identifier associate with your app
         production: process.env.PUSH_DEV || false // Specifies which environment to connect to: Production (if true) or Sandbox
       }
-    ]
+    ],
+    android:{  
+      senderId:process.env.FCM_SENDER_ID, // The Sender ID of GCM 
+      apiKey:process.env.FCM_API_KEY      // The Server API Key of GCM
+   }
   }
 });
 // Client-keys like the javascript key or the .NET key are not necessary with parse-server
