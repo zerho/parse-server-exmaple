@@ -8,14 +8,20 @@
     "url": "https://github.com/ParsePlatform/parse-server-example"
   },
   "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
   "dependencies": {
     "express": "~4.11.x",
     "kerberos": "~0.0.x",
     "parse": "~1.8.0",
-    "parse-server": "*"
+    "foursquarevenues": "*",
+    "parse-server": "*",
+    "request": "latest"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "start-debug": "nodemon index.js"
   },
   "engines": {
     "node": ">=4.3"

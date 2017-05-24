@@ -1,4 +1,6 @@
-Parse.Cloud.define("sendPush", function(request, response) {
+var ExternalPostService = require("./externalPostService.js");
+
+Parse.Cloud.define("sendPush", function (request, response) {
 
     var query = new Parse.Query('_Parse.Installation');
     var postOwner = request.params.userChannel
@@ -26,3 +28,31 @@ Parse.Cloud.define("sendPush", function(request, response) {
         response.error(error);
     });
 });
+
+Parse.Cloud.define('posts', function (request, response) {
+
+    var lat = request.params.latitude;
+    var long = request.params.longitude;
+
+    if (!lat || !long) {
+        response.error(400, 'Malformed request: no latitude or longitude found');
+        return;
+    }
+
+    console.log('Called posts ' + lat + ' ' + long);
+
+    ExternalPostService.getPlacesFromFoursquare(lat, long, request.params.hashtagsFilter, request.params.limit, function (posts, error) {
+        if (!error) {
+            console.log(posts);
+            response.success(posts);
+        } else {
+            console.log(error);
+            response.error(error);
+        }
+    });
+
+
+});
+
+
+
