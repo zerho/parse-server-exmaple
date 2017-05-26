@@ -20,7 +20,7 @@ module.exports = {
             "&formatversion=2" +
             "&colimit=50" +
             "&ggscoord=" + latitude + '|' + longitude +
-            "&ggsradius=10000" +
+            "&ggsradius=800" +
             "&ggslimit=" + limit || 10;
 
         request(url, function (error, response, body) {
