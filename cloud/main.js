@@ -47,12 +47,16 @@ Parse.Cloud.define('getPosts', function (request, response) {
 
     var finalPosts = [];
 
-    ExternalPostService.getPlacesFromWikidata(lat, long, request.params.hashtagsFilter, limit / 2, function (posts, error) {
+    ExternalPostService.getPlacesFromWikidata(lat, long, request.params.hashtagsFilter, limit / 2, function (wikiPosts, error) {
         if (!error) {
-            finalPosts.push(posts);
-            ExternalPostService.getPlacesFromFoursquare(lat, long, request.params.hashtagsFilter, limit - finalPosts.length, function (posts, error) {
+            wikiPosts.forEach(function(aPost) {
+               finalPosts.push(aPost);
+            });
+            ExternalPostService.getPlacesFromFoursquare(lat, long, request.params.hashtagsFilter, limit - finalPosts.length, function (fourPosts, error) {
                 if (!error) {
-                    finalPosts.push(posts);
+                    fourPosts.forEach(function(aPost) {
+                        finalPosts.push(aPost);
+                    });
                     console.log(finalPosts);
                     response.success(finalPosts);
                 } else {
