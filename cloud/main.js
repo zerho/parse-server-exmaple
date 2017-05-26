@@ -30,7 +30,7 @@ Parse.Cloud.define("sendPush", function (request, response) {
     });
 });
 
-Parse.Cloud.define('posts', function (request, response) {
+Parse.Cloud.define('getPosts', function (request, response) {
 
     var lat = request.params.latitude;
     var long = request.params.longitude;
@@ -40,17 +40,33 @@ Parse.Cloud.define('posts', function (request, response) {
         return;
     }
 
-    console.log('Called posts ' + lat + ' ' + long);
+    var limit = request.params.limit;
+    if (!limit) {
+        limit = 40;
+    }
 
-    ExternalPostService.getPlacesFromFoursquare(lat, long, request.params.hashtagsFilter, request.params.limit, function (posts, error) {
+    var finalPosts = [];
+
+    ExternalPostService.getPlacesFromFoursquare(lat, long, request.params.hashtagsFilter, limit / 2, function (posts, error) {
         if (!error) {
-            console.log(posts);
-            response.success(posts);
+            finalPosts.push(posts);
+            ExternalPostService.getPlacesFromWikidata(lat, long, request.params.hashtagsFilter, limit / 2, function (posts, error) {
+                if (!error) {
+                    finalPosts.push(posts);
+                    console.log(finalPosts);
+                    response.success(finalPosts);
+                } else {
+                    console.log(error);
+                    response.error(error);
+                }
+            });
         } else {
             console.log(error);
             response.error(error);
         }
     });
+
+
 
 
 });

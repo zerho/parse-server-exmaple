@@ -3,34 +3,85 @@
  */
 'use strict';
 
-var fbClientId = process.env.FB_CLIENT_ID || '1417032295024144';
-var fbSecretKey = process.env.FB_SECRET_KEY || '1fb15a2dd1bf9aa9b6546f73cc4ebd99';
-var foursquareClientId = process.env.FOURSQUARE_CLIENT_ID || 'PZIYFJB5HNOQLZHET00ZVE5CIOKCLKWNBZAUNWDPHQ2PCUKL';
-var foursquareSecretKey = process.env.FOURSQUARE_CLIENT_SECRET || 'S0L43S2OV3GP2N1JCYLUHJMRXMXYYUWKTCDFRUX1T4FB044N';
+var foursquareClientId = process.env.FOURSQUARE_CLIENT_ID;
+var foursquareSecretKey = process.env.FOURSQUARE_CLIENT_SECRET;
 
 var foursquare = (require('foursquarevenues'))(foursquareClientId, foursquareSecretKey);
+var request = require('request');
 
 module.exports = {
-    getPlacesFromFB: function (latitude, longitude, callback) {
-        var fbRequestUrl = 'https://graph.facebook.com/search?type=event&q=a'
-            + '&center=' + latitude + ',' + longitude
-            + '&fields=name,location'
-            + '&access_token=' + fbClientId + '|' + fbSecretKey;
-
-        var request = require('request');
-        request(fbRequestUrl, function (fbError, fbResponse, fbBody) {
-            if (!fbError && fbResponse.statusCode === 200) {
-                var result = (JSON.parse(fbBody).data);
-            } else if (fbError) {
-
-            } else if (fbResponse.statusCode !== 200) {
-
-            }
-        });
-    },
-
 
     getPlacesFromWikidata: function (latitude, longitude, hashtagsFilter, limit, callback) {
+        var url = "https://en.wikipedia.org/w/api.php?" +
+            "action=query" +
+            "&format=json" +
+            "&prop=coordinates|pageprops|categoryinfo" +
+            "&generator=geosearch" +
+            "&formatversion=2" +
+            "&colimit=50" +
+            "&ggscoord=" + latitude + '|' + longitude +
+            "&ggsradius=10000" +
+            "&ggslimit=" + limit || 10;
+
+        request(url, function (error, response, body) {
+            if (!error && (response.statusCode >= 200 || response.statusCode < 300)) {
+
+                var pages = JSON.parse(body).query.pages;
+
+                var hashtagsKey = {};
+                pages.forEach(function (page) {
+                    hashtagsKey[('#' + page.title).replace(/\s/g,'')] = false;
+                });
+                var hashtags = [];
+                for (var key in hashtagsKey) {
+                    hashtags.push(key);
+                }
+                var query = new Parse.Query('Hashtags').containedIn('hashtag', hashtags);
+                query.find().then(function (list) {
+
+                    list.forEach(function (obj) {
+                        hashtagsKey[obj.get('hashtag')] = obj;
+                    });
+
+                    var posts = [];
+                    var index = 0;
+                    pages.forEach(function (page) {
+                        createPost({'name': 'wikidataId', 'value': page.pageid},
+                            page.title,
+                            page.coordinates[0].lat,
+                            page.coordinates[0].lon,
+                            null,
+                            hashtags,
+                            hashtagsKey,
+                            function (post, error) {
+                                if (!error) {
+                                    if (!hashtagsFilter || (hashtagsFilter && post.hashtagsAsString.indexOf(hashtagsFilter) != -1)) {
+                                        posts.push(post);
+                                    }
+                                    index++;
+                                    if (index == pages.length) {
+                                        savePostsInDb(posts, function (posts) {
+                                            callback(posts, null);
+                                        }, function (error) {
+                                            console.log(error);
+                                            callback(null, error);
+                                        })
+                                    }
+                                } else {
+                                    callback(null, error);
+                                }
+                            });
+                    });
+
+                }, function (error) {
+                    // if some error in Query.find()
+                    callback(null, error);
+                });
+            } else if (error) {
+                // if some error in request
+                callback(null, error);
+            }
+        });
 
     },
 
@@ -51,18 +102,26 @@ module.exports = {
             "limit": limit || 10
         };
 
+        const excludedCategories = require('./excludedCategories.json');
+
         // TODO: transform this callback hell into promises to have a better code...
         foursquare.getVenues(params, function (error, result) {
             if (!error) {
                 var venues = result.response.venues;
 
+                var excludedIds = '4bf58dd8d48988d17c941735,5744ccdfe4b0c0459246b4b8,56aa371be4b08b9a8d573520,4f4534884b9074f6e4fb0174,4e52adeebd41615f56317744,58daa1548bbb0b01f18ec1a9,5310b8e5bcbc57f1066bcbf1,4f4533804b9074f6e4fb0105,4bf58dd8d48988d13d941735,4f4533814b9074f6e4fb0106,4f04b10d2fb6e1c99f3db0be,4f4533814b9074f6e4fb0107,52e81612bcbc57f1066b7a45,52e81612bcbc57f1066b7a46,52e81612bcbc57f1066b7a47,5744ccdfe4b0c0459246b4c7,4f4532974b9074f6e4fb0104,52f2ab2ebcbc57f1066b8b19,52f2ab2ebcbc57f1066b8b38';
+
                 if (venues != null) {
 
                     var hashtagsKey = {};
+                    var filteredVenues = [];
                     venues.forEach(function (venue) {
                         if (venue.categories) {
                             venue.categories.forEach(function (category) {
-                                hashtagsKey[('#' + category.name).replace(" ", "")] = false;
+                                if (excludedIds.indexOf(category.id) == -1) {
+                                    hashtagsKey[('#' + category.name).replace(/\s/g,'')] = false;
+                                    filteredVenues.push(venue);
+                                }
                             });
                         }
                     });
@@ -76,17 +135,16 @@ module.exports = {
 
                         list.forEach(function (obj) {
                             hashtagsKey[obj.get('hashtag')] = obj;
-                            console.log(hashtagsKey[obj.get('hashtag')].get('hashtag'));
                         });
 
                         var posts = [];
                         var index = 0;
-                        venues.forEach(function (venue) {
+                        filteredVenues.forEach(function (venue) {
                             var hashtags = [];
 
                             if (venue.categories) {
                                 venue.categories.forEach(function (category) {
-                                    hashtags.push(('#' + category.name).replace(" ", ""));
+                                    hashtags.push(('#' + category.name).replace(/\s/g,''));
                                 });
                             }
 
@@ -103,9 +161,8 @@ module.exports = {
                                             posts.push(post);
                                         }
                                         index++;
-                                        if (index == venues.length) {
+                                        if (index == filteredVenues.length) {
                                             savePostsInDb(posts, function (posts) {
-                                                console.log(posts);
                                                 callback(posts, null);
                                             }, function (error) {
                                                 console.log(error);
@@ -160,7 +217,6 @@ function createPost(id, text, lat, lng, phoneNumber, hashtags, existingHashtags,
     // given hashtags already exist into Abracapp DB. If not, new hashatags will be
     // saved, otherwise the it will be set a relation between the post object and the hashtag object.
     hashtags.forEach(function (stringHashtag) {
-        console.log('looking for hashtag: ' + stringHashtag);
         hashtagsAsString += stringHashtag + " ";
         if (existingHashtags[stringHashtag]) {
             console.log('found an existing hashtag: ' + existingHashtags[stringHashtag].get('hashtag'));
@@ -179,13 +235,14 @@ function createPost(id, text, lat, lng, phoneNumber, hashtags, existingHashtags,
             post.relation('hashtags').add(tag);
         });
 
-        console.log('setting all post field');
         hashtagsAsString = hashtagsAsString.trim();
 
         post.set(id.name, id.value);
         post.set('position', new Parse.GeoPoint(lat, lng));
         post.set('text', text);
-        post.set('phoneNumber', phoneNumber);
+        if (phoneNumber) {
+            post.set('phoneNumber', phoneNumber);
+        }
         post.set('type', 3);
         post.set('banCount', 0);
         post.set('likesCount', 0);
@@ -200,6 +257,40 @@ function createPost(id, text, lat, lng, phoneNumber, hashtags, existingHashtags,
 }
 
 function savePostsInDb(posts, callback) {
-    console.log('i am saving posts...');
-    Parse.Object.saveAll(posts, {useMasterKey: true}).then(callback);
+    var ids = [];
+    var fieldName = 'foursquareId';
+    posts.forEach(function (post) {
+        if (post.get('wikidataId')) {
+            fieldName = 'wikidataId';
+        }
+        ids.push(post.get(fieldName));
+    });
+
+    var finalQuery = new Parse.Query('Posts').containedIn(fieldName, ids);
+    finalQuery.find().then(function (list) {
+
+        var existingIds = [];
+        list.forEach(function(existingPost) {
+            existingIds.push(existingPost.get(fieldName));
+        });
+
+        var newPosts = [];
+        posts.forEach(function(post) {
+            if(existingIds.indexOf(post.get(fieldName)) == -1) {
+                newPosts.push(post);
+            }
+        });
+
+        Parse.Object.saveAll(newPosts, {useMasterKey: true}).then(function (insertedPosts) {
+            callback(posts, null);
+        }, function (error) {
+            console.log(error);
+            callback(posts, error);
+        });
+
+    }, function(error) {
+        callback(posts, error);
+    });
+
+
 }

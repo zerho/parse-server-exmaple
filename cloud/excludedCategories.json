@@ -1,0 +1,215 @@
+{
+  "categories": [
+    {
+      "id": "4bf58dd8d48988d17c941735",
+      "name": "Casino",
+      "pluralName": "Casinos",
+      "shortName": "Casino",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/arts_entertainment/casino_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "5744ccdfe4b0c0459246b4b8",
+      "name": "Pachinko Parlor",
+      "pluralName": "Pachinko Parlors",
+      "shortName": "Pachinko Parlor",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/arts_entertainment/default_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "56aa371be4b08b9a8d573520",
+      "name": "Tour Provider",
+      "pluralName": "Tour Providers",
+      "shortName": "Tour Provider",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/arts_entertainment/default_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "4f4534884b9074f6e4fb0174",
+      "name": "Funeral Home",
+      "pluralName": "Funeral Homes",
+      "shortName": "Funeral Home",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/building/funeralhome_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "4e52adeebd41615f56317744",
+      "name": "Military Base",
+      "pluralName": "Military Bases",
+      "shortName": "Military Base",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/building/militarybase_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "58daa1548bbb0b01f18ec1a9",
+      "name": "Power Plant",
+      "pluralName": "Power Plants",
+      "shortName": "Power Plant",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/building/factory_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "5310b8e5bcbc57f1066bcbf1",
+      "name": "Prison",
+      "pluralName": "Prisons",
+      "shortName": "Prison",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/building/default_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "4f4533804b9074f6e4fb0105",
+      "name": "Elementary School",
+      "pluralName": "Elementary Schools",
+      "shortName": "Elementary School",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/building/school_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "4bf58dd8d48988d13d941735",
+      "name": "High School",
+      "pluralName": "High Schools",
+      "shortName": "High School",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/building/school_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "4f4533814b9074f6e4fb0106",
+      "name": "Middle School",
+      "pluralName": "Middle Schools",
+      "shortName": "Middle School",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/building/school_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "4f04b10d2fb6e1c99f3db0be",
+      "name": "Music School",
+      "pluralName": "Music Schools",
+      "shortName": "Music School",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/building/school_music_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "4f4533814b9074f6e4fb0107",
+      "name": "Nursery School",
+      "pluralName": "Nursery Schools",
+      "shortName": "Nursery School",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/building/school_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "52e81612bcbc57f1066b7a45",
+      "name": "Preschool",
+      "pluralName": "Preschools",
+      "shortName": "Preschool",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/building/school_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "52e81612bcbc57f1066b7a46",
+      "name": "Private School",
+      "pluralName": "Private Schools",
+      "shortName": "Private School",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/education/default_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "52e81612bcbc57f1066b7a47",
+      "name": "Religious School",
+      "pluralName": "Religious Schools",
+      "shortName": "Religious School",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/education/default_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "5744ccdfe4b0c0459246b4c7",
+      "name": "Child Care Service",
+      "pluralName": "Child Care Services",
+      "shortName": "Child Care",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/shops/daycare_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "4f4532974b9074f6e4fb0104",
+      "name": "Daycare",
+      "pluralName": "Daycares",
+      "shortName": "Daycare",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/shops/daycare_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "52f2ab2ebcbc57f1066b8b19",
+      "name": "Gun Shop",
+      "pluralName": "Gun Shops",
+      "shortName": "Gun Shop",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/parks_outdoors/gun_",
+        "suffix": ".png"
+      },
+      "categories": []
+    },
+    {
+      "id": "52f2ab2ebcbc57f1066b8b38",
+      "name": "Lottery Retailer",
+      "pluralName": "Lottery Retailers",
+      "shortName": "Lottery",
+      "icon": {
+        "prefix": "https://ss3.4sqi.net/img/categories_v2/shops/financial_",
+        "suffix": ".png"
+      },
+      "categories": []
+    }
+  ],
+
+  "commaSeparatedIds" : "4bf58dd8d48988d17c941735,5744ccdfe4b0c0459246b4b8,56aa371be4b08b9a8d573520,4f4534884b9074f6e4fb0174,4e52adeebd41615f56317744,58daa1548bbb0b01f18ec1a9,5310b8e5bcbc57f1066bcbf1,4f4533804b9074f6e4fb0105,4bf58dd8d48988d13d941735,4f4533814b9074f6e4fb0106,4f04b10d2fb6e1c99f3db0be,4f4533814b9074f6e4fb0107,52e81612bcbc57f1066b7a45,52e81612bcbc57f1066b7a46,52e81612bcbc57f1066b7a47,5744ccdfe4b0c0459246b4c7,4f4532974b9074f6e4fb0104,52f2ab2ebcbc57f1066b8b19,52f2ab2ebcbc57f1066b8b38"
+}
