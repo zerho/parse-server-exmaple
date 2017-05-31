@@ -23,60 +23,70 @@ module.exports = {
             "&ggsradius=" + (process.env.WIKIDATA_RADIUS || 2000) +
             "&ggslimit=" + limit || 10;
 
+        console.log(url);
         request(url, function (error, response, body) {
             if (!error && (response.statusCode >= 200 || response.statusCode < 300)) {
 
-                var pages = JSON.parse(body).query.pages;
+                var query = JSON.parse(body).query;
+                if (query) {
+                    var pages = query.pages;
+                    if (pages) {
+                        var hashtagsKey = {};
+                        pages.forEach(function (page) {
+                            hashtagsKey[('#' + page.title).replace(/\s/g, '')] = false;
+                        });
+                        var hashtags = [];
+                        for (var key in hashtagsKey) {
+                            hashtags.push(key);
+                        }
+                        var query = new Parse.Query('Hashtags').containedIn('hashtag', hashtags);
+                        query.find().then(function (list) {
 
-                var hashtagsKey = {};
-                pages.forEach(function (page) {
-                    hashtagsKey[('#' + page.title).replace(/\s/g,'')] = false;
-                });
-                var hashtags = [];
-                for (var key in hashtagsKey) {
-                    hashtags.push(key);
-                }
-                var query = new Parse.Query('Hashtags').containedIn('hashtag', hashtags);
-                query.find().then(function (list) {
-
-                    list.forEach(function (obj) {
-                        hashtagsKey[obj.get('hashtag')] = obj;
-                    });
-
-                    var posts = [];
-                    var index = 0;
-                    pages.forEach(function (page) {
-                        createPost({'name': 'wikidataId', 'value': page.pageid},
-                            page.title,
-                            page.coordinates[0].lat,
-                            page.coordinates[0].lon,
-                            null,
-                            hashtags,
-                            hashtagsKey,
-                            function (post, error) {
-                                if (!error) {
-                                    if (!hashtagsFilter || (hashtagsFilter && post.hashtagsAsString.indexOf(hashtagsFilter) != -1)) {
-                                        posts.push(post);
-                                    }
-                                    index++;
-                                    if (index == pages.length) {
-                                        savePostsInDb(posts, function (posts) {
-                                            callback(posts, null);
-                                        }, function (error) {
-                                            console.log(error);
-                                            callback(null, error);
-                                        })
-                                    }
-                                } else {
-                                    callback(null, error);
-                                }
+                            list.forEach(function (obj) {
+                                hashtagsKey[obj.get('hashtag')] = obj;
                             });
-                    });
 
-                }, function (error) {
-                    // if some error in Query.find()
-                    callback(null, error);
-                });
+                            var posts = [];
+                            var index = 0;
+                            pages.forEach(function (page) {
+                                createPost({'name': 'wikidataId', 'value': page.pageid},
+                                    page.title,
+                                    page.coordinates[0].lat,
+                                    page.coordinates[0].lon,
+                                    null,
+                                    hashtags,
+                                    hashtagsKey,
+                                    function (post, error) {
+                                        if (!error) {
+                                            if (!hashtagsFilter || (hashtagsFilter && post.hashtagsAsString.indexOf(hashtagsFilter) != -1)) {
+                                                posts.push(post);
+                                            }
+                                            index++;
+                                            if (index == pages.length) {
+                                                savePostsInDb(posts, function (posts) {
+                                                    callback(posts, null);
+                                                }, function (error) {
+                                                    console.log(error);
+                                                    callback(null, error);
+                                                })
+                                            }
+                                        } else {
+                                            callback(null, error);
+                                        }
+                                    });
+                            });
+
+                        }, function (error) {
+                            // if some error in Query.find()
+                            callback(null, error);
+                        });
+                    } else {
+                        callback([], null);
+                    }
+                } else {
+                    callback([], null);
+                }
+
             } else if (error) {
                 // if some error in request
                 callback(null, error);
@@ -119,7 +129,7 @@ module.exports = {
                         if (venue.categories) {
                             venue.categories.forEach(function (category) {
                                 if (excludedIds.indexOf(category.id) == -1) {
-                                    hashtagsKey[('#' + category.name).replace(/\s/g,'')] = false;
+                                    hashtagsKey[('#' + category.name).replace(/\s/g, '')] = false;
                                     filteredVenues.push(venue);
                                 }
                             });
@@ -144,7 +154,7 @@ module.exports = {
 
                             if (venue.categories) {
                                 venue.categories.forEach(function (category) {
-                                    hashtags.push(('#' + category.name).replace(/\s/g,''));
+                                    hashtags.push(('#' + category.name).replace(/\s/g, ''));
                                 });
                             }
 
@@ -270,13 +280,13 @@ function savePostsInDb(posts, callback) {
     finalQuery.find().then(function (list) {
 
         var existingIds = [];
-        list.forEach(function(existingPost) {
+        list.forEach(function (existingPost) {
             existingIds.push(existingPost.get(fieldName));
         });
 
         var newPosts = [];
-        posts.forEach(function(post) {
-            if(existingIds.indexOf(post.get(fieldName)) == -1) {
+        posts.forEach(function (post) {
+            if (existingIds.indexOf(post.get(fieldName)) == -1) {
                 newPosts.push(post);
             }
         });
@@ -288,7 +298,7 @@ function savePostsInDb(posts, callback) {
             callback(posts, error);
         });
 
-    }, function(error) {
+    }, function (error) {
         callback(posts, error);
     });
 
